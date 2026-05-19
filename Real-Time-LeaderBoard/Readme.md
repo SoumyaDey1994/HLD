@@ -13,15 +13,11 @@ Core requirement: Continuously rank users based on score updates with very low l
 
 ### 1. Functional Requirements
     - Core Features:
-    ```
         Update player/user score in real time
-    ```
     - Fetch:
-    ```
         Top N players
         Rank of a user
         Nearby ranks around a user
-    ```
     - Handle millions of updates/sec
     - Real-time propagation to clients
 
