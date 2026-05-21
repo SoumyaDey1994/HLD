@@ -96,3 +96,33 @@ This gives:
     Get rank      	    O(log N)
 ```
 Perfect for real-time ranking.
+
+### Redis ZSET Internals
+
+Redis Sorted Set internally uses 2 data structures together:
+```
+    - Hashmap: 
+        (member -> score) like [user_1 -> 9800, user_2 -> 8700]
+        Purpose:
+            O(1) member lookup
+            Fetch current score quickly
+            Check if member exists
+    - Skip List
+        Stores sorted data as: (score, member) like [(8700, user_2), (9800, user_1)]
+        Purpose:
+            Maintain sorted ordering
+            Rank calculation
+            Top N retrieval
+            Nearby users traversal
+        Avg Complexity: O(logN)
+```
+## How Redis Achieves Efficient Operations
+
+| Operation        | Redis Command                    | Internal Working                                                                           | Complexity     |
+| ---------------- | -------------------------------- | ------------------------------------------------------------------------------------------ | -------------- |
+| Update score     | `ZINCRBY leaderboard +50 user_1` | HashMap finds member quickly → SkipList removes old score node → reinserts new sorted node | `O(log N)`     |
+| Get rank         | `ZREVRANK leaderboard user_1`    | SkipList traverses levels & uses span metadata to compute rank                             | `O(log N)`     |
+| Get Top N users  | `ZREVRANGE leaderboard 0 99`     | SkipList jumps to highest rank → sequential traversal for next M nodes                     | `O(log N + M)` |
+| Get nearby users | `ZRANGE leaderboard start end`   | SkipList finds user position → traverses neighboring nodes                                 | `O(log N + M)` |
+| Get user score   | `ZSCORE leaderboard user_1`      | Direct HashMap lookup                                                                      | `O(1)`         |
+
