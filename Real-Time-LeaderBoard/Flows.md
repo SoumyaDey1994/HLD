@@ -62,7 +62,7 @@
     Final Complexity: O(log N + M) where M = nearby returned users
 
 
-## Final Summary
+### Final Summary
 
     | Flow         | Main Internal Mechanism            | Complexity   |
     | ------------ | ---------------------------------- | -------------|
@@ -71,7 +71,7 @@
     | Get Top N    | Jump + sequential traversal        | O(log N + M) |
     | Nearby Users | Rank lookup + local traversal      | O(log N + M) |
 
-## Core Insight
+### Core Insight
 
 Redis Sorted Set succeeds because:
 ```
@@ -79,3 +79,68 @@ Redis Sorted Set succeeds because:
     SkipList -> fast ordered traversal
 ```
 This hybrid design makes Redis ideal for real-time leaderboard systems.
+
+
+### 5. Persistent Storage & Write Aggregation Strategy
+
+    - Core Idea: 
+        - Redis handles: realtime ranking
+        - Persistent DB handles: durability & long-term storage
+
+    - Recommended Flow:
+        Score Update
+            │
+            ▼
+        Redis ZSET
+            │
+            ▼
+        Kafka Event
+            │
+            ▼
+        Aggregation Layer
+            │
+        Periodic Bulk Flush
+            │
+            ▼
+        Primary DB
+    
+    - Aggregation Strategy:
+        - Maintains a temporary in-memory map (user_id -> accumulated_score_delta) like (user_1 -> +500)
+        - Flush periodically (usually every 5-10sec) as bulk updates
+
+    - Scaling Strategy:
+        Medium Scale: Custom Aggregator Service
+        Larget Scale: Flink Aggregarion
+
+    - Why Flink: Flink helps with distributed aggregation, window processing, checkpointing, exactly-once guarantees
+
+
+### 6. Real-time Score Update Propagation:
+    - Core Idea: 
+        - Whenever rank changes, publish an Kafka event, 
+        - Realtime Push consumer picks it & push delta updates over websocket
+        - UI receives delta update & update leaderboard
+    
+    - Workflow:
+            Score Update
+                │
+                ▼
+            Redis ZINCRBY
+                │
+                ▼
+            Rank Change Event by Leaderboard Service
+                │
+                ▼
+            Kafka / PubSub
+                │
+                ▼
+            Realtime Push Service
+                │
+                ▼
+            WebSocket Broadcast
+                │
+                ▼
+            Connected Clients Update UI
+    - Optimization:
+        - Broadcast only delta changes, not full leaderboard data
+        - Reduces bandwidth, websocket payload size & UI rendering cost
