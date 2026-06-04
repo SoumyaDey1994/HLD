@@ -1,6 +1,6 @@
 # System Design Interview Preparation
 
-## Systems Under Discussion
+## Topics
 
 ### 1. How Real-time Leaderboard Works
 
@@ -10,3 +10,4 @@
 
 ### 4. How a Live Presence System Works
 
+### 5. How a Vector Database Works
