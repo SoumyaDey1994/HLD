@@ -11,3 +11,5 @@
 ### 4. How a Live Presence System Works
 
 ### 5. How a Vector Database Works
+
+### 6. Order Processing in E-commerce Platform
