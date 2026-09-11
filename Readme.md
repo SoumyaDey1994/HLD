@@ -13,3 +13,6 @@
 ### 5. How a Vector Database Works
 
 ### 6. Order Processing in E-commerce Platform
+
+### 7. Multi-feature UI Application Repo Structure
+
