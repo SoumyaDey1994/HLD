@@ -12,7 +12,10 @@
 
 ### 5. How a Vector Database Works
 
-### 6. Order Processing in E-commerce Platform & Flash-Sale System Design
+### 6. Order Processing in E-commerce Platform
+    1. Traditional Order Processing Workflow
+    2. DB Schema of the System Entities
+    3. Flash-Sale System Design
 
 ### 7. Multi-feature UI Application Repo Structure
 
@@ -24,7 +27,10 @@
 
 ### 11. Online Video Streaming System Design
 
-### 12. Online Messaging App System Design (Watsapp/Slack/Teams) & Typing Indicator
+### 12. Online Messaging App System Design (Watsapp/Slack/Teams) 
+    1. 1:1 Messaging
+    2. Typing Indicator
+    3. Group Chat
 
 ### 13. React Web Application Performance Optimization
 
